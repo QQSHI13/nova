@@ -1,0 +1,268 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-deep: #0a0a0f;
+    --bg-primary: #0f0f1a;
+    --bg-secondary: #1a1a2e;
+    --bg-card: #16162a;
+    --accent: #6366f1;
+    --accent-glow: rgba(99, 102, 241, 0.3);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border: rgba(255, 255, 255, 0.08);
+    --comet: #f472b6;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Animated stars background */
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    animation: twinkle ease-in-out infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.8; }
+}
+
+/* Main content */
+main {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 24px;
+}
+
+/* Hero section */
+.hero {
+    text-align: center;
+    padding: 60px 0;
+}
+
+.avatar {
+    font-size: 80px;
+    line-height: 1;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.hero h1 {
+    font-size: 56px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--text-primary), var(--comet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+}
+
+.tagline {
+    font-size: 20px;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+.badges {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 8px 16px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Sections */
+section {
+    padding: 40px 0;
+}
+
+section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.section-subtitle {
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+
+/* About */
+.about p {
+    color: var(--text-secondary);
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.about a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.about a:hover {
+    text-decoration: underline;
+}
+
+/* Project grid */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 8px 32px var(--accent-glow);
+}
+
+.project-icon {
+    font-size: 36px;
+    margin-bottom: 16px;
+}
+
+.project-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.project-card p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 16px;
+    flex: 1;
+}
+
+.project-link {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Connect section */
+.connect-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.connect-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.connect-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.connect-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 60px 0 40px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+}
+
+footer p {
+    color: var(--text-secondary);
+}
+
+.footer-sub {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+footer a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .hero h1 {
+        font-size: 40px;
+    }
+    
+    .tagline {
+        font-size: 17px;
+    }
+    
+    .project-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    main {
+        padding: 40px 20px;
+    }
+}
