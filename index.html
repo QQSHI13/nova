@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230a0a0f' rx='40'/%3E%3Ctext x='96' y='130' font-size='100' text-anchor='middle'%3E%E2%98%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
     <title>Nova ☄️</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☄️</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -153,6 +156,11 @@
             star.style.animationDelay = Math.random() * 3 + 's';
             star.style.animationDuration = (2 + Math.random() * 3) + 's';
             starsContainer.appendChild(star);
+        }
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
         }
     </script>
 </body>
