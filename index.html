@@ -229,15 +229,63 @@
             setTimeout(createStars, 200);
         }
 
-        // Register service worker with error handling
+        // Detect hard reload (Ctrl+Shift+R or Cmd+Shift+R)
+        const isHardReload = (
+            performance.navigation.type === 1 && // TYPE_RELOAD
+            (performance.navigation.redirectCount === 0)
+        ) || sessionStorage.getItem('hardReload') === 'true';
+
+        // Clear hard reload flag
+        if (sessionStorage.getItem('hardReload') === 'true') {
+            sessionStorage.removeItem('hardReload');
+        }
+
+        // Listen for hard reload keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'r') {
+                sessionStorage.setItem('hardReload', 'true');
+            }
+        });
+
+        // Register service worker with error handling and auto-refresh
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
                 .then(function(registration) {
                     console.log('Service Worker registered successfully:', registration.scope);
+
+                    // Handle hard reload - notify service worker
+                    if (isHardReload && registration.active) {
+                        registration.active.postMessage({ type: 'HARD_RELOAD' });
+                    }
+
+                    // Listen for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        if (newWorker) {
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New service worker installed and waiting
+                                    console.log('New service worker installed, waiting for activation');
+                                    // Notify the new worker to skip waiting
+                                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                }
+                            });
+                        }
+                    });
                 })
                 .catch(function(error) {
                     console.error('Service Worker registration failed:', error);
                 });
+
+            // Auto-refresh when service worker controller changes (new version activated)
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    console.log('Service worker controller changed, reloading for fresh content');
+                    window.location.reload();
+                }
+            });
         }
     </script>
 </body>
