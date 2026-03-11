@@ -58,6 +58,8 @@ self.addEventListener('fetch', (event) => {
                         event.request.headers.get('pragma') === 'no-cache';
   
   if (isHardRefresh || isHardReload) {
+    // Reset flag after handling hard reload
+    isHardReload = false;
     // Bypass cache on hard reload
     event.respondWith(
       fetch(event.request)
