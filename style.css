@@ -16,6 +16,14 @@
     --text-muted: #64748b;
     --border: rgba(255, 255, 255, 0.08);
     --comet: #f472b6;
+    --focus-ring: #6366f1;
+}
+
+/* Font display swap for better performance */
+@font-face {
+    font-family: 'Inter';
+    font-display: swap;
+    src: local('Inter');
 }
 
 body {
@@ -25,6 +33,25 @@ body {
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
+}
+
+/* Skip to main content link for accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--accent);
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-weight: 500;
+    z-index: 100;
+    border-radius: 0 0 4px 0;
+    transition: top 0.2s;
+}
+
+.skip-link:focus {
+    top: 0;
 }
 
 /* Animated stars background */
@@ -170,6 +197,14 @@ section h2 {
     box-shadow: 0 8px 32px var(--accent-glow);
 }
 
+.project-card:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 8px 32px var(--accent-glow);
+}
+
 .project-icon {
     font-size: 36px;
     margin-bottom: 16px;
@@ -220,6 +255,13 @@ section h2 {
     border-color: var(--accent);
 }
 
+.connect-btn:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
 .connect-btn svg {
     width: 20px;
     height: 20px;
@@ -248,6 +290,53 @@ footer a {
     text-decoration: none;
 }
 
+footer a:hover {
+    text-decoration: underline;
+}
+
+footer a:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* Focus visible styles for all interactive elements */
+a:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* Reduced motion support for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .avatar {
+        animation: none;
+    }
+    
+    .star {
+        animation: none;
+        opacity: 0.5;
+    }
+    
+    .project-card:hover,
+    .project-card:focus-visible {
+        transform: none;
+    }
+    
+    .connect-btn:hover,
+    .connect-btn:focus-visible {
+        transform: none;
+    }
+}
+
 /* Responsive */
 @media (max-width: 640px) {
     .hero h1 {
@@ -264,5 +353,26 @@ footer a {
     
     main {
         padding: 40px 20px;
+    }
+    
+    .connect-links {
+        flex-direction: column;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --border: rgba(255, 255, 255, 0.3);
+        --accent: #818cf8;
+        --text-secondary: #b8c5d6;
+    }
+    
+    .project-card {
+        border-width: 2px;
+    }
+    
+    .connect-btn {
+        border-width: 2px;
     }
 }
