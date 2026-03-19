@@ -239,9 +239,12 @@
         }
 
         // Detect hard reload (Ctrl+Shift+R or Cmd+Shift+R)
+        // Using PerformanceNavigationTiming API (performance.navigation is deprecated)
+        const navEntry = performance.getEntriesByType('navigation')[0];
         const isHardReload = (
-            performance.navigation.type === 1 && // TYPE_RELOAD
-            (performance.navigation.redirectCount === 0)
+            navEntry &&
+            navEntry.type === 'reload' &&
+            (navEntry.redirectCount === 0)
         ) || sessionStorage.getItem('hardReload') === 'true';
 
         // Clear hard reload flag

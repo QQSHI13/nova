@@ -2,7 +2,8 @@ const CACHE_NAME = 'nova-site-v1';
 const urlsToCache = [
   './',
   './index.html',
-  './style.css'
+  './style.css',
+  './manifest.json'
 ];
 
 // Track hard reload state
