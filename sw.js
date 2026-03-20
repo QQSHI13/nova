@@ -6,18 +6,15 @@ const urlsToCache = [
   './manifest.json'
 ];
 
-// Track hard reload state
-let isHardReload = false;
-
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting())
       .catch((error) => {
         console.error('Cache installation failed:', error);
       })
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -28,11 +25,11 @@ self.addEventListener('activate', (event) => {
           .filter((name) => name !== CACHE_NAME)
           .map((name) => caches.delete(name))
       );
-    }).catch((error) => {
-      console.error('Cache activation failed:', error);
-    })
+    }).then(() => self.clients.claim())
+      .catch((error) => {
+        console.error('Cache activation failed:', error);
+      })
   );
-  self.clients.claim();
 });
 
 // Handle messages from clients
@@ -41,26 +38,21 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
   if (event.data && event.data.type === 'HARD_RELOAD') {
-    isHardReload = true;
     // Clear cache on hard reload to ensure fresh content
-    event.waitUntil(
-      caches.delete(CACHE_NAME).then(() => {
-        return caches.open(CACHE_NAME).then((cache) => {
-          return cache.addAll(urlsToCache);
-        });
-      })
-    );
+    caches.delete(CACHE_NAME).then(() => {
+      return caches.open(CACHE_NAME).then((cache) => {
+        return cache.addAll(urlsToCache);
+      });
+    });
   }
 });
 
 self.addEventListener('fetch', (event) => {
-  // Detect hard reload via cache-control header
+  // Detect hard reload via cache-control header (per-request, no shared state)
   const isHardRefresh = event.request.headers.get('cache-control') === 'no-cache' ||
                         event.request.headers.get('pragma') === 'no-cache';
-  
-  if (isHardRefresh || isHardReload) {
-    // Reset flag after handling hard reload
-    isHardReload = false;
+
+  if (isHardRefresh) {
     // Bypass cache on hard reload
     event.respondWith(
       fetch(event.request)
@@ -76,7 +68,6 @@ self.addEventListener('fetch', (event) => {
         })
         .catch((error) => {
           console.error('Fetch failed for:', event.request.url, error);
-          // Return a fallback response for failed requests
           if (event.request.destination === 'document') {
             return new Response(
               '<h1>Offline</h1><p>Unable to load this page. Please check your connection.</p>',
@@ -114,7 +105,6 @@ self.addEventListener('fetch', (event) => {
           })
           .catch((error) => {
             console.error('Fetch failed for:', event.request.url, error);
-            // Return a fallback response for failed requests
             if (event.request.destination === 'document') {
               return new Response(
                 '<h1>Offline</h1><p>Unable to load this page. Please check your connection.</p>',
@@ -125,7 +115,6 @@ self.addEventListener('fetch', (event) => {
                 }
               );
             }
-            // Re-throw for non-document requests
             throw error;
           });
       })
